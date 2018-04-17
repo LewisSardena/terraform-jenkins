@@ -22,7 +22,7 @@ pipeline {
     stages {
         stage('NetworkInit'){
             steps {
-                dir('module5/networking/'){
+                dir('/networking/'){
                     sh 'terraform --version'
                     sh "terraform init -input=false -plugin-dir=/var/jenkins_home/terraform_plugins \
                      --backend-config='dynamodb_table=$DYNAMODB_STATELOCK' --backend-config='bucket=$NETWORKING_BUCKET' \
@@ -34,7 +34,7 @@ pipeline {
         }
         stage('NetworkPlan'){
             steps {
-                dir('module5/networking/'){
+                dir('/networking/'){
                     script {
                         try {
                            sh "terraform workspace new ${params.WORKSPACE}"
@@ -61,7 +61,7 @@ pipeline {
                         currentBuild.result = 'UNSTABLE'
                     }
                     if(apply){
-                        dir('module5/networking'){
+                        dir('/networking'){
                             unstash "terraform-networking-plan"
                             sh 'terraform apply terraform-networking.tfplan'
                         }
@@ -71,7 +71,7 @@ pipeline {
         }
         stage('ApplicationInit'){
             steps {
-                dir('module5/applications/'){
+                dir('/applications/'){
                     sh "terraform init -input=false -plugin-dir=/var/jenkins_home/terraform_plugins \
                      --backend-config='dynamodb_table=$DYNAMODB_STATELOCK' --backend-config='bucket=$APPLICATION_BUCKET' \
                      --backend-config='access_key=$APPLICATION_ACCESS_KEY' --backend-config='secret_key=$APPLICATION_SECRET_KEY'"
@@ -82,7 +82,7 @@ pipeline {
         }
         stage('ApplicationPlan'){
             steps {
-                dir('module5/applications/'){
+                dir('/applications/'){
                     script {
                         try {
                             sh "terraform workspace new ${params.WORKSPACE}"
@@ -109,7 +109,7 @@ pipeline {
                         currentBuild.result = 'UNSTABLE'
                     }
                     if(apply){
-                        dir('module5/applications'){
+                        dir('/applications'){
                             unstash "terraform-application-plan"
                             sh 'terraform apply terraform-application.tfplan'
                         }
