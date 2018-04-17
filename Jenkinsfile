@@ -57,13 +57,13 @@ pipeline {
                         apply = true
                     } catch (err) {
                         apply = false
-                        cmd "terraform destroy -var 'aws_access_key=$NETWORKING_ACCESS_KEY' -var 'aws_secret_key=$NETWORKING_SECRET_KEY' -force"
+                        bat "terraform destroy -var 'aws_access_key=$NETWORKING_ACCESS_KEY' -var 'aws_secret_key=$NETWORKING_SECRET_KEY' -force"
                         currentBuild.result = 'UNSTABLE'
                     }
                     if(apply){
                         dir('networking/'){
-                            unstacmd "terraform-networking-plan"
-                            cmd 'terraform apply terraform-networking.tfplan'
+                            unstash "terraform-networking-plan"
+                            bat 'terraform apply terraform-networking.tfplan'
                         }
                     }
                 }
@@ -72,11 +72,11 @@ pipeline {
         stage('ApplicationInit'){
             steps {
                 dir('applications/'){
-                    cmd "terraform init -input=false -plugin-dir=/var/jenkins_home/terraform_plugins \
+                    bat "terraform init -input=false -plugin-dir=/var/jenkins_home/terraform_plugins \
                      --backend-config='dynamodb_table=$DYNAMODB_STATELOCK' --backend-config='bucket=$APPLICATION_BUCKET' \
                      --backend-config='access_key=$APPLICATION_ACCESS_KEY' --backend-config='secret_key=$APPLICATION_SECRET_KEY'"
-                    cmd "echo \$PWD"
-                    cmd "whoami"
+                    bat "echo \$PWD"
+                    bat "whoami"
                 }
             }
         }
@@ -85,11 +85,11 @@ pipeline {
                 dir('applications/'){
                     script {
                         try {
-                            cmd "terraform workspace new ${params.WORKSPACE}"
+                            bat "terraform workspace new ${params.WORKSPACE}"
                         } catch (err) {
-                            cmd "terraform workspace select ${params.WORKSPACE}"
+                            bat "terraform workspace select ${params.WORKSPACE}"
                         }
-                        cmd "terraform plan -var 'aws_access_key=$APPLICATION_ACCESS_KEY' -var 'aws_secret_key=$APPLICATION_SECRET_KEY' \
+                        bat "terraform plan -var 'aws_access_key=$APPLICATION_ACCESS_KEY' -var 'aws_secret_key=$APPLICATION_SECRET_KEY' \
                         -var 'url=${params.LAMBDA_URL}' -out terraform-application.tfplan;echo \$? > status"
                         stash name: "terraform-application-plan", includes: "terraform-application.tfplan"
                     }
@@ -105,13 +105,13 @@ pipeline {
                         apply = true
                     } catch (err) {
                         apply = false
-                        cmd "terraform destroy -var 'aws_access_key=$APPLICATION_ACCESS_KEY' -var 'aws_secret_key=$APPLICATION_SECRET_KEY' -force"
+                        bat "terraform destroy -var 'aws_access_key=$APPLICATION_ACCESS_KEY' -var 'aws_secret_key=$APPLICATION_SECRET_KEY' -force"
                         currentBuild.result = 'UNSTABLE'
                     }
                     if(apply){
                         dir('applications/'){
                             unstash "terraform-application-plan"
-                            cmd 'terraform apply terraform-application.tfplan'
+                            bat 'terraform apply terraform-application.tfplan'
                         }
                     }
                 }
