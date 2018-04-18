@@ -22,9 +22,7 @@ pipeline {
             steps {
                 dir('networking/'){
                     bat 'terraform --version'
-                    bat "terraform init -input=false -plugin-dir=$PLUGIN_PATH \
-                     -backend-config='dynamodb_table=$DYNAMODB_STATELOCK' -backend-config='bucket=$NETWORKING_BUCKET' \
-                     -backend-config='access_key=$NETWORKING_ACCESS_KEY' -backend-config='secret_key=$NETWORKING_SECRET_KEY'"
+                    bat "terraform init -input=false -plugin-dir='$PLUGIN_PATH' --backend-config='dynamodb_table=$DYNAMODB_STATELOCK' --backend-config='bucket=$NETWORKING_BUCKET' --backend-config='access_key=$NETWORKING_ACCESS_KEY' --backend-config='secret_key=$NETWORKING_SECRET_KEY'"
                     bat "echo \$PWD"
                     bat "whoami"
                 }
