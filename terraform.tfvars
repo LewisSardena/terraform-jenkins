@@ -1,6 +1,6 @@
-aws_access_key = "AKIAIWD5744F3KX2VNHQ"
+aws_access_key = "AKIAIGLIXUGL4U4KPH2Q"
 
-aws_secret_key = "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"
+aws_secret_key = "adozXfv/dlrjggbdtHqI3g9Pogkg6UNGyN1O//IF"
 
 #private_key_path = "C:\\PathToYourPrivateKeys\PrivateKey.pem"
 

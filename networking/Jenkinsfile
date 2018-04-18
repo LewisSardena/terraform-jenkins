@@ -21,7 +21,7 @@ pipeline {
             steps {
                 dir('networking/'){
                     bat 'terraform --version'
-                    bat "terraform init -input=false -plugin-dir=/var/jenkins_home/terraform_plugins \
+                    bat "terraform init -input=false -plugin-dir="C:\Program Files (x86)\Jenkins" \
                      --backend-config='dynamodb_table=$DYNAMODB_STATELOCK' --backend-config='bucket=$NETWORKING_BUCKET' \
                      --backend-config='access_key=$NETWORKING_ACCESS_KEY' --backend-config='secret_key=$NETWORKING_SECRET_KEY'"
                     bat "echo \$PWD"
