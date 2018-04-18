@@ -15,7 +15,7 @@ pipeline {
         NETWORKING_BUCKET = "ddt-networkingsardena"
         NETWORKING_ACCESS_KEY = credentials('networking_access_key')
         NETWORKING_SECRET_KEY = credentials('networking_secret_key')
-        PLUGIN_PATH = "C:\Program Files (x86)\Jenkins"
+        PLUGIN_PATH = "C:\\Program Files (x86)\\Jenkins"
     }
     stages {
         stage('NetworkInit'){
